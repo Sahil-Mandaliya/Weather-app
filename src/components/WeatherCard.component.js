@@ -1,7 +1,15 @@
 import React,{Component} from 'react';
+import { toast } from 'react-toastify';
 
-import {Night, Storm, SunnyDay} from '../resources/resourceConst'
+
+import {Night, SunnyDay} from '../resources/resourceConst'
 import Axios from 'axios';
+import "./css/card.css";
+import "./css/searchInput.css";
+import "./css/list.css";
+import "./css/bgswap.css";
+// import * as $ from 'jquery';
+
 
 class WeatherCard extends Component
 {
@@ -17,11 +25,10 @@ class WeatherCard extends Component
         this.onChangeSearchQuery=this.onChangeSearchQuery.bind(this);
         this.onSearchClick=this.onSearchClick.bind(this);
     }
-
-    getWeatherData() {
+    getWeatherDataWithCity(cityName){
       Axios.get('http://localhost:9095',{
         params: { 
-          query: this.state.searchQuery, 
+          query: cityName, 
         },
         headers: {
           'Access-Control-Allow-Origin': '*'
@@ -33,7 +40,7 @@ class WeatherCard extends Component
           status=true;
         }
         if(res.data!==null && res.data.weather_data!==null && res.data.weather_data.error!==null) {
-          alert(res.data.weather_data.error.message)
+          toast.success(res.data.weather_data.error.message);
         } else {
           this.setState({
             data : res.data.weather_data,
@@ -42,6 +49,10 @@ class WeatherCard extends Component
         }
       })
       .catch(err=>console.log("Error fetching city data :" + err)); 
+    }
+
+    getWeatherData() {
+      this.getWeatherDataWithCity(this.state.searchQuery)
     }
 
     componentDidMount() {
@@ -60,7 +71,9 @@ class WeatherCard extends Component
           }
         })
         .then((res)=>{
-          this.matchingCities = res.data
+          this.setState({
+            matchingCities:res.data
+          })
         })
         .catch(err=>console.log("Error fetching city data :" + err)); 
     }
@@ -69,52 +82,75 @@ class WeatherCard extends Component
         e.preventDefault();
         this.getWeatherData();
     }
-    
+
     render() {
       var logo = SunnyDay;
+      var textClass = "text-black-bold"
       if(this.state.fetchedData) {
-        if(this.state.data.current.is_day===false) {
+        if(this.state.data.current.is_day===0) {
           logo = Night
+          textClass = "text-white-bold"
         }
       }
       return (
         <div>
-        <form className="d-flex" role="search">
-          <input className="form-control me-2" type="search" placeholder="Search" aria-label="Search" onKeyUp={this.onChangeSearchQuery}></input>
-          <button className="btn btn-outline-success" type="submit" onClick={this.onSearchClick}>Search</button>
-        </form>
-        <div className="card" style={{"width":"36rem", "margin":"1%"}}>
-                <img src={logo} className="card-img-top" width="400" height="300" alt="..."></img>
-                <div className="card-body">
-                        <h5 className="card-title">{ this.state.fetchedData ? this.state.data.location.name + "(" +this.state.data.location.region + ", " + this.state.data.location.country + ")": "City Name"}</h5>
-                        <div class="container">
-                          <div class="row">
-                            <div class="col"> 
-                              { this.state.fetchedData ? this.state.data.current.condition.text :""}
-                            </div>
-                          </div>
-                          <div class="row">
-                            <div class="col">
-                              { this.state.fetchedData ? "Temprature :" + this.state.data.current.temp_c:""}
-                            </div>
-                          </div>
-                          <div class="row">
-                            <div class="col">
-                              { this.state.fetchedData ? "Humidity : " + this.state.data.current.humidity:""}
-                            </div>
-                            <div class="col">
-                              { this.state.fetchedData ? "Wind speed(mph) : " + this.state.data.current.wind_mph:""}
-                            </div>
-                          </div>
-                        </div>
-                        
-                        {/* <p className="card-text">{ this.state.fetchedData ? this.state.data.current.condition.text :""}</p>
-                        <p className="card-text">{ this.state.fetchedData ? "Temprature :" + this.state.data.current.temp_c:""}</p>
-                        <p className="card-text">{ this.state.fetchedData ? "Humidity : " + this.state.data.current.humidity:""}</p>
-                        <p className="card-text">{ this.state.fetchedData ? "Wind speed(mph) : " + this.state.data.current.wind_mph:""}</p> */}
-                        <a href="/getAllDetails" style={{"margin":"1%"}} className="btn btn-primary">Get More Details</a>
+          <div>
+            <form className="d-flex" role="search">
+              <input className="form-control me-2 search-input" id="search-city" type="search" placeholder="Search (enter 2 or more character to search)" aria-label="Search" onKeyUpCapture={this.onChangeSearchQuery}></input>
+              <button className="btn btn-outline-success search-btn" type="submit" onClick={this.onSearchClick}>Search</button>
+            </form>
+          </div>
+          <div className='city-list'>
+            <div className='empty-list-msg'>
+              <button 
+                className="btn btn-outline btn-info" 
+                disabled
+                hidden={this.state.matchingCities.length===0?false:true}
+                >Search list will apear here</button>
+            </div>
+            <ul className="list-group list-group-horizontal position-relative overflow-auto" >
+              {
+                this.state.matchingCities.map(el => {
+                  return <button 
+                      className="list-group-item btn btn-outline btn-info"
+                      id={el.id}
+                      value={el.name}
+                      onClick={()=>this.getWeatherDataWithCity(el.lat+","+el.lon)}
+                      >
+                        {el.name + ", "+el.region}
+                      </button>
+                })
+              }
+            </ul>
+          </div>
+          <div className="row">
+            <div className="col-sm-6">
+              <div className={`card ${textClass}`}>
+                <img src={logo} className="card-img"  style={{"width":"100%","height":"60vh"}} alt="Card"></img>
+                <div className="card-body card-img-overlay data-font">
+                    <div className={`card-title' ${textClass}`}><b>{ this.state.fetchedData ? this.state.data.location.name + " (" +this.state.data.location.region + ", " + this.state.data.location.country + ")": "City Name"}</b></div>
+                    <ul className="list-group list-group-flush align-items-center">
+                      <li className={`list-group-item list-group-flush ${textClass}`}>
+                        <ul className="list-group list-group-horizontal list-group-flush">
+                          <li className={`list-group-item temp-font ${textClass}`}>{ this.state.fetchedData ? this.state.data.current.temp_c:""}</li>
+                          <ul className="list-group list-group-flush">
+                            <li className={`list-group-item ${textClass}`}>°C</li>
+                            <li className={`list-group-item ${textClass}`}>{ this.state.fetchedData ? this.state.data.current.condition.text :""}</li>
+                          </ul>    
+                        </ul>
+                      </li>
+                      <li className="list-group-item list-group-flush">
+                        <ul className="list-group list-group-flush">
+                        <li className={`list-group-item ${textClass}`}>{ this.state.fetchedData ? "Humidity : " + this.state.data.current.humidity:""}</li>
+                        <li className={`list-group-item ${textClass}`}>{ this.state.fetchedData ? "Wind speed(mph) : " + this.state.data.current.wind_mph:""}</li>
+                        </ul>
+                      </li>
+                    </ul>
+                    <a href="/getAllDetails" className="btn btn-primary">Get More Details</a>
                 </div>
-        </div>
+                </div>
+              </div>
+          </div>
         </div>
       )
     }

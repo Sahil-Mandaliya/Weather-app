@@ -1,5 +1,5 @@
 import stormGif from './storm.gif'
-import sunnyDay from './sunnyDay.jpeg'
+import sunnyDay from './sunny.gif'
 import night from './night.gif'
 
 export const Storm = stormGif;
