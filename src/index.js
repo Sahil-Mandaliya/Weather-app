@@ -11,7 +11,7 @@ import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <GoogleOAuthProvider clientId='203961869133-4h5bsnatmnjfdnd82sr1t4taal4eic48.apps.googleusercontent.com'>
+  <GoogleOAuthProvider clientId=''>
   <React.StrictMode>
     {/* <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> */}
