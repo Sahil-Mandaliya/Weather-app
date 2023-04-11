@@ -1,8 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
-import "jquery/dist/jquery.min.js";
+import 'bootstrap/dist/js/bootstrap.js';
 import "bootstrap/dist/css/bootstrap.min.css";
+import "jquery/dist/jquery.min.js";
+import './index.css';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 
 import App from './App';
@@ -10,7 +11,7 @@ import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <GoogleOAuthProvider clientId=''>
+  <GoogleOAuthProvider clientId='203961869133-4h5bsnatmnjfdnd82sr1t4taal4eic48.apps.googleusercontent.com'>
   <React.StrictMode>
     {/* <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> */}

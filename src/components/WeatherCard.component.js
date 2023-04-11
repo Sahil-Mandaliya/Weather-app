@@ -1,15 +1,14 @@
 import React,{Component} from 'react';
 import { toast } from 'react-toastify';
 
-
-import {Night, SunnyDay} from '../resources/resourceConst'
+import BookMarkComponent from './BookMark.component'
+import {Night, SunnyDay, getWeatherIcon} from '../resources/resourceConst'
 import Axios from 'axios';
 import "./css/card.css";
+import "./css/bookmark.css";
 import "./css/searchInput.css";
 import "./css/list.css";
 import "./css/bgswap.css";
-// import * as $ from 'jquery';
-
 
 class WeatherCard extends Component
 {
@@ -17,18 +16,24 @@ class WeatherCard extends Component
     {
         super(props);
         this.state={
+            userId:4,
             searchQuery:'',
+            selectedCityData:null,
             matchingCities:[],
             data:null,
-            fetchedData:false
+            fetchedData:false,
+            isBookMarked:false
         }
         this.onChangeSearchQuery=this.onChangeSearchQuery.bind(this);
         this.onSearchClick=this.onSearchClick.bind(this);
+        this.onClickDropdownCityListItem=this.onClickDropdownCityListItem.bind(this);
     }
-    getWeatherDataWithCity(cityName){
+    getWeatherDataWithCity(cityName, cityRegion){
       Axios.get('http://localhost:9095',{
         params: { 
-          query: cityName, 
+          city_name: cityName, 
+          city_region:cityRegion,
+          user_id:this.state.userId
         },
         headers: {
           'Access-Control-Allow-Origin': '*'
@@ -44,15 +49,29 @@ class WeatherCard extends Component
         } else {
           this.setState({
             data : res.data.weather_data,
-            fetchedData: status
+            fetchedData: status,
+            isBookMarked:res.data.weather_data.bookmarkedCity
           })
         }
       })
       .catch(err=>console.log("Error fetching city data :" + err)); 
     }
 
+    onClickDropdownCityListItem(e, cityData){
+      e.preventDefault()
+      document.getElementById("search-city-query").value = e.target.value
+      this.setState({
+          searchQuery:cityData.name,
+          selectedCityData:cityData.region
+        })
+    }
+
     getWeatherData() {
-      this.getWeatherDataWithCity(this.state.searchQuery)
+      let cityRegion = "";
+      if(this.state.data !== null || this.state.data !== undefined) {
+        cityRegion = this.state.selectedCityData;
+      }
+      this.getWeatherDataWithCity(this.state.searchQuery, cityRegion)
     }
 
     componentDidMount() {
@@ -83,6 +102,12 @@ class WeatherCard extends Component
         this.getWeatherData();
     }
 
+    setWeatherData(cityData) {
+      this.setState({
+        data:cityData
+      })
+    }
+
     render() {
       var logo = SunnyDay;
       var textClass = "text-black-bold"
@@ -94,62 +119,88 @@ class WeatherCard extends Component
       }
       return (
         <div>
-          <div>
-            <form className="d-flex" role="search">
-              <input className="form-control me-2 search-input" id="search-city" type="search" placeholder="Search (enter 2 or more character to search)" aria-label="Search" onKeyUpCapture={this.onChangeSearchQuery}></input>
-              <button className="btn btn-outline-success search-btn" type="submit" onClick={this.onSearchClick}>Search</button>
-            </form>
-          </div>
-          <div className='city-list'>
-            <div className='empty-list-msg'>
-              <button 
-                className="btn btn-outline btn-info" 
-                disabled
-                hidden={this.state.matchingCities.length===0?false:true}
-                >Search list will apear here</button>
-            </div>
-            <ul className="list-group list-group-horizontal position-relative overflow-auto" >
-              {
-                this.state.matchingCities.map(el => {
-                  return <button 
-                      className="list-group-item btn btn-outline btn-info"
-                      id={el.id}
-                      value={el.name}
-                      onClick={()=>this.getWeatherDataWithCity(el.lat+","+el.lon)}
-                      >
-                        {el.name + ", "+el.region}
-                      </button>
-                })
-              }
-            </ul>
-          </div>
-          <div className="row">
-            <div className="col-sm-6">
-              <div className={`card ${textClass}`}>
-                <img src={logo} className="card-img"  style={{"width":"100%","height":"60vh"}} alt="Card"></img>
-                <div className="card-body card-img-overlay data-font">
-                    <div className={`card-title' ${textClass}`}><b>{ this.state.fetchedData ? this.state.data.location.name + " (" +this.state.data.location.region + ", " + this.state.data.location.country + ")": "City Name"}</b></div>
-                    <ul className="list-group list-group-flush align-items-center">
-                      <li className={`list-group-item list-group-flush ${textClass}`}>
-                        <ul className="list-group list-group-horizontal list-group-flush">
-                          <li className={`list-group-item temp-font ${textClass}`}>{ this.state.fetchedData ? this.state.data.current.temp_c:""}</li>
-                          <ul className="list-group list-group-flush">
-                            <li className={`list-group-item ${textClass}`}>°C</li>
-                            <li className={`list-group-item ${textClass}`}>{ this.state.fetchedData ? this.state.data.current.condition.text :""}</li>
-                          </ul>    
-                        </ul>
-                      </li>
-                      <li className="list-group-item list-group-flush">
-                        <ul className="list-group list-group-flush">
-                        <li className={`list-group-item ${textClass}`}>{ this.state.fetchedData ? "Humidity : " + this.state.data.current.humidity:""}</li>
-                        <li className={`list-group-item ${textClass}`}>{ this.state.fetchedData ? "Wind speed(mph) : " + this.state.data.current.wind_mph:""}</li>
-                        </ul>
-                      </li>
-                    </ul>
-                    <a href="/getAllDetails" className="btn btn-primary">Get More Details</a>
+          <div className="container">
+            <div className='row'>
+              <div className='col-sm'>
+                {/* <Search setWeatherData={()=>this.setWeatherData}></Search> */}
+                <div className="dropdown">
+                  <div className='row'>
+                    <input className="form-control me-2 search-input dropdown-toggle col-sm-1" 
+                      id="search-city-query" 
+                      data-bs-toggle="dropdown" 
+                      type="search" 
+                      placeholder="Search (enter 2 or more character to search)" 
+                      aria-label="Search" onKeyUpCapture={this.onChangeSearchQuery}>
+                    </input>
+                    <button className="btn btn-outline-success search-btn col-sm-1" type="submit" onClick={this.onSearchClick}>Search</button>
+                    <div className="dropdown-menu search-list" aria-labelledby="dropdownMenuButton">
+                      {
+                        this.state.matchingCities.map(el => {
+                          return <button 
+                              className="dropdown-item"
+                              id={el.id}
+                              value={el.name}
+                              // onClick={()=>this.getWeatherDataWithCity(el.lat+","+el.lon)}
+                              onClick={(e) => this.onClickDropdownCityListItem(e,el)}
+                              >
+                                {el.name + ", "+el.region}
+                              </button>
+                        })
+                      }
+                    </div>
+                   </div>
                 </div>
-                </div>
+                {/* <div className="row"> */}
+                  {/* <div className="col-sm-1"> */}
+                    <div className="card info-card-style">
+                      <img src={logo} className="card-img info-card-img-style" alt="Card"></img>
+                      <div className="card-body d-flex flex-column card-img-overlay data-font">
+                          <div>
+                          { this.state.fetchedData ?  
+                            <div className={`card-title' ${textClass}`}>
+                              <b>{ this.state.fetchedData ? this.state.data.location.name + " (" +this.state.data.location.region + ", " + this.state.data.location.country + ")": "City Name"}</b>
+                              {
+                                this.state.userId > 0 ? <BookMarkComponent
+                                  key = {this.state.data.location.name + " (" +this.state.data.location.region + ", " + this.state.data.location.country + ")"}
+                                  userId= {this.state.userId}
+                                  cityData = {this.state.data.location}
+                                  isBookMarked = {this.state.isBookMarked}
+                                ></BookMarkComponent>:<></>
+                              }
+                            </div>: 
+                            <div></div>
+                            }
+                          </div>
+                         
+                          <ul className="list-group list-group-flush align-items-center">
+                            <li className={`list-group-item list-group-flush ${textClass}`}>
+                              <ul className="list-group list-group-flush list-group-horizontal">
+                                <li className={`list-group-item list-group-flush temp-font ${textClass}`}>{ this.state.fetchedData ? this.state.data.current.temp_c:""}</li>
+                                <ul className="list-group list-group-flush">
+                                  <li className={`list-group-item list-group-flush temp-sign ${textClass}`}>°C</li>
+                                  <li className={`list-group-item list-group-flush ${textClass}`}>
+                                    { this.state.fetchedData ? 
+                                      <div>{this.state.data.current.condition.text} {getWeatherIcon(this.state.data.current.condition.text,this.state.data.current.is_day)} 
+                                      </div>:""
+                                      }
+                                  </li>
+                                </ul>    
+                              </ul>
+                            </li>
+                            <li className="list-group-item list-group-flush">
+                              <ul className="list-group list-group-flush">
+                                <li className={`list-group-item list-group-flush ${textClass}`}>{ this.state.fetchedData ? "Humidity : " + this.state.data.current.humidity:""}</li>
+                                <li className={`list-group-item list-group-flush ${textClass}`}>{ this.state.fetchedData ? "Wind : " + this.state.data.current.wind_mph + "(mph)":""}</li>
+                              </ul>
+                            </li>
+                          </ul>
+                          <a href="/getAllDetails" className={`btn btn-primary mt-auto info-card-details-button-style`}>Get More Details</a>
+                      </div>
+                      </div>
+                    {/* </div> */}
+                {/* </div> */}
               </div>
+            </div>
           </div>
         </div>
       )

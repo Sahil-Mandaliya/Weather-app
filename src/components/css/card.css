@@ -1,3 +1,17 @@
+.info-card-style {
+    width: 45%;
+    float: left;
+    height: 60vh;
+    overflow:hidden
+}
+
+.info-card-img-style {
+    width: 100%;
+    height: 100%;
+    right: 0;
+    top: 0;
+}
+
 .list-group-item-white-text {
     background-color: transparent;
     color: white;
@@ -9,19 +23,44 @@
 
 
 .text-black-bold {
-    font-size: 1.5vw;
+    font-size: 1.7vw;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-weight: 700;
+    border: none;
 
 }
 
 .text-white-bold {
-    font-size: 1.5vw;
+    font-size: 1.7vw;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-weight: 700;
     color: white;
+    border: none;
 }
 
 .temp-font {
     font-size:3vw;
+    float: right;    
+}
+
+.temp-sign{
+    align-self:flex-start;
+}
+
+/*
+.list-group-item-wc {
+    border: none;
+} */
+
+.info-card-details-button-style {
+    font-size: 1.4vw;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-weight: 500;
+    color: white;
+    width: 40%;
+    align-self: center;
+}
+
+.weather-condition {
+    font-size: 2.5vw;    
 }

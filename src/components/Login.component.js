@@ -15,8 +15,8 @@ function addNewUser(profile) {
         },
         {
             headers: {
-          'Access-Control-Allow-Origin': '*'
-        }
+                'Access-Control-Allow-Origin': '*'
+            }
         }
       )
 }
@@ -65,9 +65,9 @@ class Login extends Component
       return (
         <div>
             <Navbar></Navbar>
-            <div className="card">
-                <div className="card-body">
-                <div className="card-title">
+            <div className="login-card">
+                <div className="login-card-body">
+                <div className="login-card-title">
                     <h2>LOGIN</h2>
                     <div className="underline-title"></div>
                 </div>
@@ -88,7 +88,7 @@ class Login extends Component
                     <a href="/signUp" id="signup">Don't have account yet?</a>
                     
                 </form>
-                <div id="card-title" className='btn'>
+                <div id="login-card-title" className='btn'>
                     <GoogleLoginComponent></GoogleLoginComponent>
                 </div>
                 </div>
