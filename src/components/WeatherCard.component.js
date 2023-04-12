@@ -3,6 +3,8 @@ import { toast } from 'react-toastify';
 
 import BookMarkComponent from './BookMark.component'
 import {Night, SunnyDay, getWeatherIcon} from '../resources/resourceConst'
+import WatchList from './WatchList.component';
+
 import Axios from 'axios';
 import "./css/card.css";
 import "./css/bookmark.css";
@@ -150,55 +152,52 @@ class WeatherCard extends Component
                     </div>
                    </div>
                 </div>
-                {/* <div className="row"> */}
-                  {/* <div className="col-sm-1"> */}
-                    <div className="card info-card-style">
-                      <img src={logo} className="card-img info-card-img-style" alt="Card"></img>
-                      <div className="card-body d-flex flex-column card-img-overlay data-font">
-                          <div>
-                          { this.state.fetchedData ?  
-                            <div className={`card-title' ${textClass}`}>
-                              <b>{ this.state.fetchedData ? this.state.data.location.name + " (" +this.state.data.location.region + ", " + this.state.data.location.country + ")": "City Name"}</b>
-                              {
-                                this.state.userId > 0 ? <BookMarkComponent
-                                  key = {this.state.data.location.name + " (" +this.state.data.location.region + ", " + this.state.data.location.country + ")"}
-                                  userId= {this.state.userId}
-                                  cityData = {this.state.data.location}
-                                  isBookMarked = {this.state.isBookMarked}
-                                ></BookMarkComponent>:<></>
-                              }
-                            </div>: 
-                            <div></div>
-                            }
-                          </div>
-                         
-                          <ul className="list-group list-group-flush align-items-center">
-                            <li className={`list-group-item list-group-flush ${textClass}`}>
-                              <ul className="list-group list-group-flush list-group-horizontal">
-                                <li className={`list-group-item list-group-flush temp-font ${textClass}`}>{ this.state.fetchedData ? this.state.data.current.temp_c:""}</li>
-                                <ul className="list-group list-group-flush">
-                                  <li className={`list-group-item list-group-flush temp-sign ${textClass}`}>°C</li>
-                                  <li className={`list-group-item list-group-flush ${textClass}`}>
-                                    { this.state.fetchedData ? 
-                                      <div>{this.state.data.current.condition.text} {getWeatherIcon(this.state.data.current.condition.text,this.state.data.current.is_day)} 
-                                      </div>:""
-                                      }
-                                  </li>
-                                </ul>    
-                              </ul>
-                            </li>
-                            <li className="list-group-item list-group-flush">
-                              <ul className="list-group list-group-flush">
-                                <li className={`list-group-item list-group-flush ${textClass}`}>{ this.state.fetchedData ? "Humidity : " + this.state.data.current.humidity:""}</li>
-                                <li className={`list-group-item list-group-flush ${textClass}`}>{ this.state.fetchedData ? "Wind : " + this.state.data.current.wind_mph + "(mph)":""}</li>
-                              </ul>
-                            </li>
+                <div className="card info-card-style">
+                  <img src={logo} className="card-img info-card-img-style" alt="Card"></img>
+                  <div className="card-body d-flex flex-column card-img-overlay data-font">
+                      <div>
+                      { this.state.fetchedData ?  
+                        <div className={`card-title' ${textClass}`}>
+                          <b>{ this.state.fetchedData ? this.state.data.location.name + " (" +this.state.data.location.region + ", " + this.state.data.location.country + ")": "City Name"}</b>
+                          {
+                            this.state.userId > 0 ? <BookMarkComponent
+                              key = {this.state.data.location.name + " (" +this.state.data.location.region + ", " + this.state.data.location.country + ")"}
+                              userId= {this.state.userId}
+                              cityData = {this.state.data.location}
+                              isBookMarked = {this.state.isBookMarked}
+                            ></BookMarkComponent>:<></>
+                          }
+                        </div>: 
+                        <div></div>
+                        }
+                      </div>
+                      
+                      <ul className="list-group list-group-flush align-items-center">
+                        <li className={`list-group-item list-group-flush ${textClass}`}>
+                          <ul className="list-group list-group-flush list-group-horizontal">
+                            <li className={`list-group-item list-group-flush temp-font ${textClass}`}>{ this.state.fetchedData ? this.state.data.current.temp_c:""}</li>
+                            <ul className="list-group list-group-flush">
+                              <li className={`list-group-item list-group-flush temp-sign ${textClass}`}>°C</li>
+                              <li className={`list-group-item list-group-flush ${textClass}`}>
+                                { this.state.fetchedData ? 
+                                  <div>{this.state.data.current.condition.text} {getWeatherIcon(this.state.data.current.condition.text,this.state.data.current.is_day)} 
+                                  </div>:""
+                                  }
+                              </li>
+                            </ul>    
                           </ul>
-                          <a href="/getAllDetails" className={`btn btn-primary mt-auto info-card-details-button-style`}>Get More Details</a>
-                      </div>
-                      </div>
-                    {/* </div> */}
-                {/* </div> */}
+                        </li>
+                        <li className="list-group-item list-group-flush">
+                          <ul className="list-group list-group-flush">
+                            <li className={`list-group-item list-group-flush ${textClass}`}>{ this.state.fetchedData ? "Humidity : " + this.state.data.current.humidity:""}</li>
+                            <li className={`list-group-item list-group-flush ${textClass}`}>{ this.state.fetchedData ? "Wind : " + this.state.data.current.wind_mph + "(mph)":""}</li>
+                          </ul>
+                        </li>
+                      </ul>
+                      <a href="/getAllDetails" className={`btn btn-primary mt-auto info-card-details-button-style ${textClass}`}>Get More Details</a>
+                  </div>
+                </div>
+                <WatchList></WatchList>
               </div>
             </div>
           </div>

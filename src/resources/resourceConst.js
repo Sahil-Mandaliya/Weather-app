@@ -1,7 +1,7 @@
 import stormGif from './storm.gif'
 import sunnyDay from './sunny.gif'
 import night from './night.gif'
-import { WiDaySunny,WiDaySunnyOvercast, WiCloudy,WiNightAltCloudy,WiNightRain,WiDayRain, WiDayCloudy } from 'react-icons/wi';
+import { WiDaySunny,WiDaySunnyOvercast, WiCloudy,WiNightAltCloudy,WiNightRain,WiDayRain, WiDayCloudy,WiNightClear,WiHorizonAlt,WiDayHaze,WiNightFog } from 'react-icons/wi';
 import '../components/css/card.css'
 
 export const Storm = stormGif;
@@ -10,6 +10,12 @@ export const Night = night;
 
 export function getWeatherIcon(condition, isDay) {
     switch(String(condition).toLowerCase()) {
+        case 'clear':
+            if(isDay === 1) {
+                return <WiHorizonAlt className='weather-condition'></WiHorizonAlt>
+            } else {
+                return <WiNightClear className='weather-condition'></WiNightClear> 
+            }
         case 'sunny':
           return <WiDaySunny className='weather-condition'></WiDaySunny>;
         case 'overcast':
@@ -34,6 +40,12 @@ export function getWeatherIcon(condition, isDay) {
                 return <WiDayRain className='weather-condition'></WiDayRain>
             } else {
                 return <WiNightRain className='weather-condition'></WiNightRain>
+            }
+        case 'mist' :
+            if(isDay === 1) {
+                return <WiDayHaze className='weather-condition'></WiDayHaze>
+            } else {
+                return <WiNightFog className='weather-condition'></WiNightFog>
             }
         default:
           return <></>;
