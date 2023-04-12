@@ -1,0 +1,16 @@
+.data-bg {
+  background-color:rgb(0, 0, 0);
+}
+
+.data-font {
+  color: rgb(0, 0, 0);
+}
+
+.data-font::after {
+  /* This value is the OPPOSITE color of our background */
+  padding-left: 20px;
+    display: block;
+    text-align: center;
+  color: rgb(0, 255, 255); 
+  mix-blend-mode: difference;
+}

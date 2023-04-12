@@ -1,0 +1,21 @@
+.bookMark {
+    font-size: 200%;
+    float: right;
+    color: white;
+}
+
+.bookMark:hover {
+    cursor: pointer;
+    color: red;
+}
+
+.bookMarked {
+    font-size: 200%;
+    float: right;
+    color: red;
+}
+
+.bookMarked:hover {
+    cursor: pointer;
+    color: white;
+}

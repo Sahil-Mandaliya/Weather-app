@@ -1,0 +1,22 @@
+.search-input {
+    margin-top: 1%;
+    margin-bottom: 1%;
+    width: 45%;
+}
+
+.search-btn {
+    margin-top: 1%;
+    margin-bottom: 1%;
+}
+
+.search-list {
+    margin-right: 0.2%;
+    /* border-width: 1%; */
+    width: 45%;
+}
+
+.drop-down-style {
+    width: 100%;
+    max-height: 30%;
+    overflow: scroll;
+}
